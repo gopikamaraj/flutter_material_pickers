@@ -4,8 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_material_pickers/pickers/scroll_picker.dart';
 
-import 'responsive_dialog.dart';
 import '../interfaces/common_dialog_properties.dart';
+import 'responsive_dialog.dart';
 
 /// This is a support widget that returns an Dialog with checkboxes as a Widget.
 /// It is designed to be used in the showDialog method of other fields.
@@ -27,7 +27,8 @@ class ScrollPickerDialog extends StatefulWidget
   });
 
   // Variables
-  final List<String> items;
+  List<String> items;
+  List<String> allItems = [];
   final String initialItem;
   @override
   final String title;
@@ -60,6 +61,34 @@ class _ScrollPickerDialogState extends State<ScrollPickerDialog> {
 
   String selectedItem;
 
+  void updateItems(String filterText) {
+    if (widget.allItems.length == 0) {
+      widget.allItems = widget.items;
+    }
+    // print(filterText);
+    if (filterText != "") {
+      setState(() {
+        widget.items = [];
+        for (var index = 0; index < widget.allItems.length; index++) {
+          if (widget.allItems[index].contains(filterText)) {
+            widget.items.add(widget.allItems[index]);
+          }
+        }
+      });
+    } else {
+      setState(() {
+        widget.items = widget.allItems;
+      });
+    }
+    // print(widget.items);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     assert(context != null);
@@ -75,6 +104,7 @@ class _ScrollPickerDialogState extends State<ScrollPickerDialog> {
       maxShortSide: widget.maxLongSide,
       confirmText: widget.confirmText,
       cancelText: widget.cancelText,
+      onFiltered: updateItems,
       child: ScrollPicker(
         items: widget.items,
         initialValue: selectedItem,
