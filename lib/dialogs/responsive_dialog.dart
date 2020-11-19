@@ -1,8 +1,9 @@
 // Copyright (c) 2018, codegrue. All rights reserved. Use of this source code
 // is governed by the MIT license that can be found in the LICENSE file.
 
-import 'package:flutter_material_pickers/flutter_material_pickers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_material_pickers/flutter_material_pickers.dart';
+
 import '../interfaces/common_dialog_properties.dart';
 
 // copied from flutter calendar picker
@@ -23,7 +24,9 @@ class ResponsiveDialog extends StatefulWidget
     this.forcePortrait = false,
     double maxLongSide,
     double maxShortSide,
+    this.onFiltered,
     this.hideButtons = false,
+    this.filterItems = false,
     this.okPressed,
     this.cancelPressed,
     this.confirmText,
@@ -35,6 +38,7 @@ class ResponsiveDialog extends StatefulWidget
 
   // Variables
   final BuildContext context;
+  final ValueChanged<String> onFiltered;
   @override
   final String title;
   final Widget child;
@@ -52,6 +56,7 @@ class ResponsiveDialog extends StatefulWidget
   @override
   final double maxShortSide;
   final bool hideButtons;
+  final bool filterItems;
   @override
   final String confirmText;
   @override
@@ -75,18 +80,39 @@ class _ResponsiveDialogState extends State<ResponsiveDialog> {
     return Container(
       color: _headerColor,
       height: (orientation == Orientation.portrait)
-          ? kPickerHeaderPortraitHeight
+          ? kPickerHeaderPortraitHeight + 35
           : null,
       width: (orientation == Orientation.landscape)
-          ? kPickerHeaderLandscapeWidth
+          ? kPickerHeaderLandscapeWidth + 35
           : null,
       child: Center(
-        child: Text(
-          widget.title,
-          style: TextStyle(
-            fontSize: 20.0,
-            color: _headerTextColor,
-          ),
+        child: Column(
+          children: [
+            Text(
+              widget.title,
+              style: TextStyle(
+                fontSize: 20.0,
+                color: _headerTextColor,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.all(10),
+              height: 30.0,
+              color: Colors.white,
+              child: TextFormField(
+                keyboardType: TextInputType.name,
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Filter',
+                ),
+                onChanged: (text) {
+                  setState(() {
+                    widget.onFiltered(text);
+                  });
+                },
+              ),
+            )
+          ],
         ),
       ),
       padding: EdgeInsets.all(20.0),
