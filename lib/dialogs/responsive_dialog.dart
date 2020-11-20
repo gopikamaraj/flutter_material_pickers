@@ -99,7 +99,7 @@ class _ResponsiveDialogState extends State<ResponsiveDialog> {
               margin: EdgeInsets.all(10),
               height: 30.0,
               color: Colors.white,
-              child: TextFormField(
+              child: TextField(
                 keyboardType: TextInputType.name,
                 decoration: InputDecoration(
                   border: OutlineInputBorder(),
